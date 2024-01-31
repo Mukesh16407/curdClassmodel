@@ -1,0 +1,21 @@
+{
+  "class": [
+    {
+      "id": "A101",
+      "rollno": "01",
+      "lastname": "LastnameA101",
+      "middlename": "",
+      "firstname": "StudentA101",
+      "dateOfJoining": "2021-02-13"
+    },
+    {
+      "id": "A102",
+      "rollno": "02",
+      "lastname": "LastnameA102",
+      "middlename": "",
+      "firstname": "StudentA102",
+      "dateOfJoining": "2021-04-24"
+    }
+   
+  ]
+}
