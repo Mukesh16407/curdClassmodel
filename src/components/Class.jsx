@@ -5,6 +5,12 @@ export const Class = () => {
   const [classData, setClassData] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [EditedObject, setEditedObject] = useState("");
+  const [formData, setFormData] = useState({
+    rollno: "",
+    firstname: "",
+    lastname: "",
+    dateOfJoining: "",
+  });
   console.log(EditedObject, "EditedObject");
   useEffect(() => {
     getDataFromServer();
@@ -13,6 +19,11 @@ export const Class = () => {
   const getDataFromServer = () => {
     axios.get("http://localhost:3001/class").then(({ data }) => {
       setClassData(data);
+    });
+  };
+  const getPostInServer = (formData) => {
+    axios.post("http://localhost:3001/class", formData).then(({ data }) => {
+      getDataFromServer();
     });
   };
 
@@ -26,15 +37,46 @@ export const Class = () => {
   };
 
   const handleEdit = (id) => {
-    debugger;
     setIsEdit(true);
 
-    const findActualObject = classData.filter((item) => item.id === id);
-    setEditedObject(...findActualObject);
-    // axios.put(`http://localhost:3001/class/${id}`, {}).then((data) => {
-    //   getDataFromServer();
-    //   //console.log("suceesfully Delete");
-    // });
+    const findActualObject = classData.find((item) => item.id === id);
+    setEditedObject(findActualObject);
+  };
+
+  const handleUpdate = (data) => {
+    if (isEdit) {
+      axios
+        .put(`http://localhost:3001/class/${EditedObject.id}`, {
+          rollno: data.rollno,
+          firstname: data.firstname,
+          lastname: data.lastname,
+          dateOfJoining: data.dateOfJoining,
+        })
+        .then(() => {
+          getDataFromServer();
+          setEditedObject("");
+          setIsEdit(false);
+          setFormData({
+            // Reset formData to empty state
+            rollno: "",
+            firstname: "",
+            lastname: "",
+            dateOfJoining: "",
+          });
+        })
+        .catch((error) => {
+          console.error("Error updating data:", error);
+        });
+    } else {
+      getPostInServer(data);
+      setFormData({
+        // Reset formData to empty state after posting
+        rollno: "",
+        firstname: "",
+        lastname: "",
+        dateOfJoining: "",
+      });
+    }
   };
 
   return (
@@ -85,11 +127,13 @@ export const Class = () => {
             </div>
           );
         })}
-      {isEdit ? (
-        <EditClass handleEdit={handleEdit} EditedObject={EditedObject} />
-      ) : (
-        ""
-      )}
+      <EditClass
+        handleUpdate={handleUpdate}
+        EditedObject={EditedObject}
+        isEdit={isEdit}
+        setFormData={setFormData}
+        formData={formData}
+      />
     </div>
   );
 };

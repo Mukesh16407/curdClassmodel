@@ -1,38 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export const EditClass = ({ handleEdit, EditedObject }) => {
-  const [formData, setFormData] = useState({
-    rollNo: EditedObject?.rollno,
-    firstName: EditedObject?.firstname,
-    lastName: EditedObject?.lastname,
-    dateOfJoining: EditedObject?.dateOfJoining,
-  });
-  console.log(formData);
+export const EditClass = ({
+  handleUpdate,
+  EditedObject,
+  isEdit,
+  setFormData,
+  formData,
+}) => {
   const handleEditText = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+  useEffect(() => {
+    if (isEdit) {
+      setFormData({
+        rollno: EditedObject?.rollno || "",
+        firstname: EditedObject?.firstname || "",
+        lastname: EditedObject?.lastname || "",
+        dateOfJoining: EditedObject?.dateOfJoining || "",
+      });
+    } else {
+      setFormData({
+        rollno: "",
+        firstname: "",
+        lastname: "",
+        dateOfJoining: "",
+      });
+    }
+  }, [EditedObject, isEdit]);
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleEdit(formData);
+    handleUpdate(formData);
   };
   return (
     <div>
       <input
-        name="rollNo"
-        value={formData.rollNo}
+        name="rollno"
+        value={formData.rollno}
         placeholder="Roll No"
         onChange={handleEditText}
       />
       <input
-        name="firstName"
-        value={formData.firstName}
+        name="firstname"
+        value={formData.firstname}
         placeholder="First Name"
         onChange={handleEditText}
       />
       <input
-        name="lastName"
-        value={formData.lastName}
+        name="lastname"
+        value={formData.lastname}
         placeholder="Last Name"
         onChange={handleEditText}
       />
